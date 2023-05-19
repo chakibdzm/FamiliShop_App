@@ -20,12 +20,12 @@ class SizeConfig {
 double getHeight(double dimension) {
   double screenHeight = SizeConfig.screenHeight;
   // 926 is the frame height for the design
-  return screenHeight * (dimension / 812);
+  return screenHeight * (dimension / 852);
 }
 
 // Gets the propotional width as per screen size
 double getWidth(double dimension) {
   double screenWidth = SizeConfig.screenWidth;
   // 428 is the frame width for the design
-  return screenWidth * (dimension / 375);
+  return screenWidth * (dimension / 393);
 }

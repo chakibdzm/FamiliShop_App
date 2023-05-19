@@ -1,4 +1,8 @@
+import 'package:famili_shop_app/Screens/Auth%20Screens/Registerations.dart';
+import 'package:famili_shop_app/Screens/Product/View.dart';
 import 'package:flutter/material.dart';
+
+import 'Screens/Auth Screens/Login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,6 +20,6 @@ class MyApp extends StatelessWidget {
           highlightColor: Colors.transparent,
           primarySwatch: Colors.blue,
         ),
-        home: null);
+        home: const ProductPage());
   }
 }
