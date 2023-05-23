@@ -15,12 +15,93 @@ class _ProductPageState extends State<ProductPage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return SafeArea(child: Scaffold(
+
         backgroundColor: Colors.white,
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: getHeight(75),),
+             Container(
+               height: getHeight(75),
+               child: Stack(
+                 children: [
+                   Positioned(child: InkWell(
+                     child: SvgPicture.asset("assets/icons/arrow.svg",height: getHeight(17),),
+                   ),
+                   top: getHeight(28),
+                     left: getWidth(17),
+                   ),
+                   Positioned(child:Container(
+                     height: getHeight(40),
+                     width: getWidth(187),
+                     child: TextFormField(
+                       style: TextStyle(
+                         fontWeight: FontWeight.w500,
+                         fontSize: getHeight(18),
+                         color: Colors.black,
+                       ),
+
+                       cursorColor: const Color(0xFF9DA3B6),
+                       keyboardType: TextInputType.emailAddress,
+                       decoration: InputDecoration(
+                         focusedBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(15.0),
+                           borderSide:  BorderSide(
+                             width: 1,
+                             color: Kprimary,
+                           ),
+                         ),
+
+                         prefixIconConstraints: const BoxConstraints(maxHeight: 25),
+
+                         border: OutlineInputBorder(
+                             borderRadius: BorderRadius.circular(34.0),
+                             borderSide:  BorderSide(
+                               width: 1,
+                               color: Kprimary,
+                             )),
+                         fillColor:Colors.white,
+                         filled: true,
+                         hintText: 'Chercher Sur FamiliShop',
+
+                         hintStyle: TextStyle(
+                           fontSize: getHeight(12),
+                           fontWeight: FontWeight.w400,
+                           color: Color(0xFF565555),
+                         ),
+                         prefixIcon: Padding(
+                           padding:  EdgeInsets.only(left: getWidth(15),right: getWidth(5)),
+                           child: SvgPicture.asset("assets/icons/search.svg"),
+                         )
+
+                       ),
+                     ),
+                   ),
+                   top: getHeight(20),
+                     left: getWidth(60),
+
+
+                   ),
+                   
+                   Positioned(child: InkWell(child: SvgPicture.asset("assets/icons/panier.svg")),
+                   top: getHeight(21),
+                     right: getWidth(71),
+                   ),
+                   
+                   Positioned(child: InkWell(child:SvgPicture.asset("assets/icons/carbon_overflow-menu-vertical.svg"),),
+                   top: getHeight(18),
+                     right: getWidth(20),
+                   
+                   )
+
+
+
+
+
+                 ],
+               ),
+
+             ),
               Container(
                 height: getHeight(332),
                 width: getWidth(393),
@@ -71,11 +152,11 @@ class _ProductPageState extends State<ProductPage> {
                     )
                   ],
                 )
-                    
+
 
 
               ),
-            
+
             SizedBox(height: getHeight(16),),
             Padding(
               padding:  EdgeInsets.only(left: getWidth(21)),
@@ -156,7 +237,7 @@ class _ProductPageState extends State<ProductPage> {
                   shape: BoxShape.circle,
                   color: Colors.red,
                 ),
-                
+
               ),
             ),
 
