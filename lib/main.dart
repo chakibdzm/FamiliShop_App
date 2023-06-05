@@ -1,4 +1,7 @@
+import 'package:famili_shop_app/Components/Bottom_nav_bar.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
+import 'package:famili_shop_app/Screens/Home/Home_screen.dart';
+import 'package:famili_shop_app/Screens/Profile.dart';
 import 'package:flutter/material.dart';
 
 
@@ -18,6 +21,6 @@ class MyApp extends StatelessWidget {
           highlightColor: Colors.transparent,
           primarySwatch: Colors.blue,
         ),
-        home: const LoginPage());
+        home:  BottomNav());
   }
 }
