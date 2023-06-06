@@ -1,6 +1,9 @@
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
+
+import 'Product/api-service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -10,6 +13,19 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
+  Map<String, dynamic> userData={};
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData().then((result) {
+      setState(() {
+        userData = result;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
@@ -42,6 +58,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(width: getWidth(150),),
                     InkWell(
+                      onTap: (){
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>  const LoginPage(),
+                          ),
+                        );
+                      },
                       child: Container(
                         height: getHeight(60),
                         width: getWidth(95),
@@ -85,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(10),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("Username :",
+                 child: Text("Username :"+userData["username"],
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -96,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(11),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("Email :",
+                 child: Text("Email :"+userData["email"],
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -107,7 +131,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(11),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("First Name :",
+                 child: Text("First Name :"+userData["first_name"],
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -118,7 +142,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(11),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("Last Name :",
+                 child: Text("Last Name :"+userData["last_name"],
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -129,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(11),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("Phone Number :",
+                 child: Text("Phone Number :${userData["phone_number"]}",
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -140,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(11),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("Membership :",
+                 child: Text("Membership :"+userData["membership"],
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -151,7 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
                SizedBox(height: getHeight(11),),
                Padding(
                  padding:  EdgeInsets.only(left: getWidth(20)),
-                 child: Text("Points :",
+                 child: Text("Points :${userData["points"]}",
                    style: TextStyle(
                      color: Colors.black,
                      fontSize: getHeight(16),
@@ -163,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
            ],
          ),
-          Spacer(),
+          const Spacer(),
           Center(child: Image.asset("assets/illustrations/logo-Famili-shop 2.png")),
           SizedBox(height: getHeight(20),)
 

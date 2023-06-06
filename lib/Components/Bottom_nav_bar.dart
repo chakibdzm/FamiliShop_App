@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../Screens/Home/Home_screen.dart';
+import '../Screens/Product/Allproducts.dart';
 
 class BottomNav extends StatefulWidget {
   @override
@@ -18,8 +19,8 @@ class BottomNavState extends State<BottomNav> {
   var currentIndex = 0;
   List<Widget> screens=[
     const HomePage(),
+    const ProductAllPage(),
     const PanierPage(),
-    const ProductPage(),
     const ProfilePage(),
   ];
 

@@ -1,18 +1,36 @@
 import 'package:famili_shop_app/Components/Bottom_nav_bar.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
 import 'package:famili_shop_app/Screens/Home/Home_screen.dart';
+import 'package:famili_shop_app/Screens/Product/Allproducts.dart';
+import 'package:famili_shop_app/Screens/Product/View.dart';
 import 'package:famili_shop_app/Screens/Profile.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'errorscreen.dart';
 
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+  ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+    return CustomErrorWidget(errorDetails);
+  };
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+
+  MyApp({required this.isLoggedIn});
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'FamiliShop',
@@ -21,6 +39,6 @@ class MyApp extends StatelessWidget {
           highlightColor: Colors.transparent,
           primarySwatch: Colors.blue,
         ),
-        home:  BottomNav());
+        home:  isLoggedIn ?BottomNav() :LoginPage());
   }
 }

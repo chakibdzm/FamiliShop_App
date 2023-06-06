@@ -1,10 +1,14 @@
+import 'package:famili_shop_app/Components/Bottom_nav_bar.dart';
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Auth%20Screens/Registerations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../Size_config.dart';
 import '../Home/Home_screen.dart';
+import '../Product/api-service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -37,8 +41,12 @@ class _LoginPageState extends State<LoginPage> {
     if (response.statusCode == 200) {
       var responseData = json.decode(response.body);
       if (responseData != null && responseData['jwt'] != null) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+
         String token = responseData['jwt'];
         print("success");
+        await saveToken(token);
         return token;
       } else {
         print('Unexpected response format');
@@ -197,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const HomePage(),
+                      builder: (context) =>  BottomNav(),
                   ),
                 );
               } else {
@@ -239,7 +247,14 @@ class _LoginPageState extends State<LoginPage> {
 
                 ),
                 InkWell(
-                  onTap: null,
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const RegisterPage(),
+                      ),
+                    );
+                  },
                   child: Text('Inscrire',
                   style: TextStyle(
                     color: Kprimary,

@@ -30,5 +30,6 @@ class Product {
     required this.colors,
     required this.comments,
   });
-}
+
+  }
 

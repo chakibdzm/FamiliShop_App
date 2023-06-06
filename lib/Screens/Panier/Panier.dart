@@ -1,4 +1,5 @@
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Product/api-service.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,10 +13,24 @@ class PanierPage extends StatefulWidget {
 
 class _PanierPageState extends State<PanierPage> {
   var cpt = 1;
-  List<int> counters = List.generate(10, (index) => 1);
+
+
+  List<Map<String, dynamic>> products = [];
+  final _location = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    fetchPanier().then((result) {
+      setState(() {
+        products = result;
+      });
+    });
+  }
+  List<int> counters = List.generate(10, (index) => 1);
+  @override
   Widget build(BuildContext context) {
+
     SizeConfig().init(context);
     return SafeArea(
         child: Scaffold(
@@ -34,13 +49,20 @@ class _PanierPageState extends State<PanierPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
+                            padding:  EdgeInsets.only(left: getWidth(15),top: getHeight(20)),
+                            child: InkWell( onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Icon(Icons.arrow_back_outlined,size: getHeight(35),)),
+                          ),
+                          Padding(
                             padding:
-                            EdgeInsets.only(left: getWidth(54), top: getHeight(28)),
+                            EdgeInsets.only(left: getWidth(28), top: getHeight(28)),
                             child: Text(
                               'Panier',
                               style: TextStyle(
                                 color: Colors.black,
-                                fontWeight: FontWeight.w400,
+                                fontWeight: FontWeight.w600,
                                 fontSize: getHeight(16),
                               ),
                             ),
@@ -52,7 +74,7 @@ class _PanierPageState extends State<PanierPage> {
                         height: getHeight(640),
                         child: ListView.builder(
                             scrollDirection: Axis.vertical,
-                            itemCount: 10,
+                            itemCount: products.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Stack(
                                 children: [
@@ -62,8 +84,10 @@ class _PanierPageState extends State<PanierPage> {
                                   Positioned(
                                     top: getHeight(17),
                                     left: getWidth(93),
+                                    right:getWidth(85),
                                     child: Text(
-                                      'Eau de parfum Homme',
+                                      products[index]['product_name'],
+                                      overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           fontSize: getHeight(16),
                                           fontWeight: FontWeight.w500),
@@ -78,8 +102,13 @@ class _PanierPageState extends State<PanierPage> {
                                   Positioned(
                                     left: getWidth(17),
                                     top: getHeight(17),
-                                    child: Image.asset(
-                                        "assets/illustrations/Rectangle 71.png"),
+                                    bottom:getHeight(35),
+                                    child: SizedBox(
+                                        height:getHeight(60),
+                                        width:getWidth(65),
+                                        child: ClipRRect(
+                                            borderRadius:BorderRadius.circular(getHeight(10)),
+                                            child: Image.network('https:'+products[index]["alt_image"].toString(),fit: BoxFit.fill,))),
                                   ),
                                   Positioned(
                                     top: getHeight(40),
@@ -110,7 +139,7 @@ class _PanierPageState extends State<PanierPage> {
                                     left: getWidth(93),
                                     top: getHeight(60),
                                     child: Text(
-                                      "3 articles seulement",
+                                      products[index]["product_quantity"].toString() +" articles seulement",
                                       style: TextStyle(
                                           color: Colors.red,
                                           fontSize: getHeight(12),
@@ -121,7 +150,7 @@ class _PanierPageState extends State<PanierPage> {
                                     right: getWidth(23),
                                     top: getHeight(17),
                                     child: Text(
-                                      "12,100DA",
+                                      products[index]['product_price'].toString()+'DA',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: getHeight(16),
@@ -132,6 +161,11 @@ class _PanierPageState extends State<PanierPage> {
                                     bottom: getHeight(6),
                                     left: getWidth(17),
                                     child: InkWell(
+                                      onTap:()async{
+                                        final token = await getToken();
+                                        await deleteProductFromCart(products[index]["product_id"], token);
+
+                                      },
                                       child: Row(
                                         children: [
                                           Icon(Icons.delete, color: Kprimary),
@@ -211,26 +245,83 @@ class _PanierPageState extends State<PanierPage> {
                             })),
                     SizedBox(height: getHeight(19),),
                     Center(
-                      child: InkWell(
-                        child: Container(
-                          height: getHeight(50),
-                          width: getWidth(180),
-                          decoration: BoxDecoration(
-                              color: Kprimary,
-                              borderRadius: BorderRadius.circular(getHeight(34))
-                          ),
+                      child: Row(
+                        children: [
+                          SizedBox(width: getWidth(20),),
+                          InkWell(
+                            onTap: () async{
+                              final token = await getToken();
+                              await postOrderWithAddress(token,_location.toString());
+                            },
+                            child: Container(
+                              height: getHeight(50),
+                              width: getWidth(180),
+                              decoration: BoxDecoration(
+                                  color: Kprimary,
+                                  borderRadius: BorderRadius.circular(getHeight(34))
+                              ),
 
-                          child:Center(
-                            child: Text("Commander",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: getHeight(14),
-                              fontWeight: FontWeight.w600
+                              child:Center(
+                                child: Text("Commander",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: getHeight(14),
+                                  fontWeight: FontWeight.w600
+                                ),
+                                ),
+                              )
+                              ),
                             ),
+                          SizedBox(width: getWidth(20),),
+                          Container(
+                            width: getWidth(150),
+                            height: getHeight(50),
+                            child: TextFormField(
+                              controller: _location,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: getHeight(18),
+                                color: Colors.black,
+                              ),
+
+                              cursorColor: const Color(0xFF9DA3B6),
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    borderSide:  BorderSide(
+                                      width: 1,
+                                      color: Kprimary,
+                                    ),
+                                  ),
+
+                                  prefixIconConstraints: const BoxConstraints(maxHeight: 25),
+
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(34.0),
+                                      borderSide:  BorderSide(
+                                        width: 1,
+                                        color: Kprimary,
+                                      )),
+                                  fillColor:Colors.white,
+                                  filled: true,
+                                  hintText: 'Location',
+
+                                  hintStyle: TextStyle(
+                                    fontSize: getHeight(12),
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF565555),
+                                  ),
+                                  prefixIcon: Padding(
+                                    padding:  EdgeInsets.only(left: getWidth(8)),
+                                    child: Icon(Icons.location_on,color: Kprimary,),
+                                  )
+
+                              ),
                             ),
-                          )
                           ),
-                        ),
+                        ],
+                      ),
                       ),
 
                   ],

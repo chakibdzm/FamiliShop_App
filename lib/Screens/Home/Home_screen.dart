@@ -1,9 +1,13 @@
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Panier/Panier.dart';
+import 'package:famili_shop_app/Screens/Product/Allproducts.dart';
+import 'package:famili_shop_app/Screens/Product/View.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+
 
 import '../Auth Screens/Api/ProductModel.dart';
 
@@ -17,36 +21,41 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<Product> products = [];
 
-
+  bool isLoading = true;
   Future<void> fetchProducts() async {
-    final response = await http.get(Uri.parse('https://familishop.onrender.com/products/'));
 
-    if (response.statusCode == 200) {
-      print("success home");
-      print(response.body.toString());
-      final data = jsonDecode(response.body);
+      final response = await http.get(Uri.parse('https://familishop.onrender.com/products/'));
+      if (response.statusCode == 200) {
+        Future.delayed(const Duration(seconds: 2), () {
+          setState(() {
+            isLoading = false;
+          });
+        });
+        final data = jsonDecode(response.body);
 
-      setState(() {
-        products = List<Product>.from(data.map((productData) => Product(
-          // Create Product objects based on fetched data
-          id: productData['id'],
-          title: productData['title'],
-          description: productData['description'],
-          quantity: productData['quantity'],
-          price: productData['price'],
-          promotionStatus: productData['promotion_status'],
-          discountPercentage: productData['discount_percentage'],
-          collectionName: productData['collection_name'],
-          srcImage: productData['src_image'],
-          altImage: productData['alt_image'],
-          taille: productData['taille'],
-          colors: productData['colors'],
-          comments: List<String>.from(productData['comments']),
-        ))).toList();
-      });
-    } else {
-      throw Exception('Failed to fetch products');
-    }
+        setState(() {
+          products = List<Product>.from(data.map((productData) => Product(
+            // Create Product objects based on fetched data
+            id: productData['id'],
+            title: productData['title'],
+            description: productData['description'],
+            quantity: productData['quantity'],
+            price: productData['price'],
+            promotionStatus: productData['promotion_status'],
+            discountPercentage: productData['discount_percentage'],
+            collectionName: productData['collection_name'],
+            srcImage: productData['src_image'],
+            altImage: productData['alt_image'],
+            taille: productData['taille'],
+            colors: productData['colors'],
+            comments: List<String>.from(productData['comments']),
+          ))).toList();
+        });
+      }
+      else {
+        throw Exception('Failed to fetch products');
+      }
+
   }
   @override
   void initState() {
@@ -57,6 +66,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    products.shuffle();
     SizeConfig().init(context);
     return SafeArea(child: Scaffold(
       backgroundColor: Colors.white,
@@ -126,7 +136,17 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     Positioned(top: getHeight(21),
-                      right: getWidth(18),child: InkWell(child: SvgPicture.asset(
+                      right: getWidth(18),child: InkWell(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const PanierPage(),
+                              ),
+                            );
+                          },
+
+                          child: SvgPicture.asset(
                         "assets/icons/panier.svg")),
                     ),
 
@@ -185,18 +205,27 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(getHeight(18))
                               ),
                                 child: Center(
-                                  child: Column(
+                                  child:
+                                  isLoading ?
+                                  SizedBox(
+                                    height: getHeight(20),
+                                    width: getWidth(20),
+                                    child: CircularProgressIndicator(strokeWidth: getWidth(5),
+                                    ),
+                                  )
+                                 : Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
 
                                       SizedBox(
                                           height: getHeight(85),
                                           width: getWidth(98),
-                                          child: Image.network(products[index].srcImage,fit: BoxFit.cover,)),
+                                          child:
+                                          Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,)),
                                       SizedBox(height: getHeight(5),),
                                       Padding(
                                         padding:  EdgeInsets.only(left: getWidth(10)),
-                                        child: Text(products[index].price.toStringAsFixed(2)+' DA',
+                                        child: Text('${products[index].price.toStringAsFixed(2)} DA',
                                         style: TextStyle(
                                           color: Colors.red,
                                           fontWeight: FontWeight.w700,
@@ -331,6 +360,14 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(width: getWidth(65),),
                     InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProductAllPage(),
+                          ),
+                        );
+                      },
                       child: Text('Voir tous',
                       style: TextStyle(
                         color: Kprimary,
@@ -355,49 +392,78 @@ class _HomePageState extends State<HomePage> {
                     scrollDirection: Axis.horizontal,
                     itemCount: products.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Padding(
+
+
+                      return
+
+
+
+                        Padding(
                         padding:  EdgeInsets.only(right: getWidth(5),left: getWidth(5)),
-                        child: Container(
+                        child:
+
+
+                        Container(
                           width: getWidth(107),
                           height: getHeight(157),
                           decoration:BoxDecoration(
                               color: const Color(0x38E1DEDE),
                               borderRadius: BorderRadius.circular(getHeight(18))
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(child: SizedBox(
-                                  height:getHeight(107),
-                                  width:getWidth(106),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(getHeight(15)),
-                                      child: Image.network(products[index].srcImage,fit: BoxFit.cover,)))),
-                              SizedBox(height: getHeight(7),),
-                              Padding(
-                                padding:  EdgeInsets.only(left: getWidth(7)),
-                                child: Text(products[index].title,
-                                  overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: getHeight(14),
-                                  fontWeight: FontWeight.w700
-                                ),
-                                ),
+                          child: isLoading ?
+                          Padding(
+                            padding:  EdgeInsets.only(top: getHeight(60),bottom: getHeight(60),left: getWidth(40),right: getWidth(40)),
+                            child: SizedBox(
+                              height: getHeight(20),
+                              width: getWidth(20),
+                              child: CircularProgressIndicator(strokeWidth: getWidth(5),
                               ),
-                              SizedBox(height: getHeight(6),),
-                              Padding(
-                                padding:  EdgeInsets.only(left: getWidth(7)),
-                                child: Text(products[index].price.toStringAsFixed(2)+'DA',
+                            ),
+                          ):InkWell(
+                               onTap:  (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductPage(id:products[index].id),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                    child: SizedBox(
+                                    height:getHeight(107),
+                                    width:getWidth(106),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(getHeight(15)),
+                                        child: Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,)))),
+                                SizedBox(height: getHeight(7),),
+                                Padding(
+                                  padding:  EdgeInsets.only(left: getWidth(7)),
+                                  child: Text(products[index].title,
+                                    overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: getHeight(12),
-                                      fontWeight: FontWeight.w700
+                                    color: Colors.black,
+                                    fontSize: getHeight(14),
+                                    fontWeight: FontWeight.w700
+                                  ),
                                   ),
                                 ),
-                              ),
+                                SizedBox(height: getHeight(6),),
+                                Padding(
+                                  padding:  EdgeInsets.only(left: getWidth(7)),
+                                  child: Text('${products[index].price.toStringAsFixed(2)}DA',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: getHeight(12),
+                                        fontWeight: FontWeight.w700
+                                    ),
+                                  ),
+                                ),
 
-                            ],
+                              ],
+                            ),
                           ),
 
                         ),
@@ -423,6 +489,14 @@ class _HomePageState extends State<HomePage> {
 
                     SizedBox(width: getWidth(145),),
                     InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProductAllPage(),
+                          ),
+                        );
+                      },
                       child: Text('Voir tous',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
@@ -453,42 +527,61 @@ class _HomePageState extends State<HomePage> {
                               color: const Color(0x38E1DEDE),
                               borderRadius: BorderRadius.circular(getHeight(18))
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(child: SizedBox(
-                                  height:getHeight(107),
-                                  width:getWidth(106),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(getHeight(15)),
-                                      child: Image.network(products[index].srcImage,
-                                      fit: BoxFit.cover,
-                                      )))),
-                              SizedBox(height: getHeight(7),),
-                              Padding(
-                                padding:  EdgeInsets.only(left: getWidth(7)),
-                                child: Text(products[index].title,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: getHeight(14),
-                                      fontWeight: FontWeight.w700
+                          child: isLoading ?
+                          Padding(
+                            padding:  EdgeInsets.only(top: getHeight(60),bottom: getHeight(60),left: getWidth(40),right: getWidth(40)),
+                            child: SizedBox(
+                              height: getHeight(20),
+                              width: getWidth(20),
+                              child: CircularProgressIndicator(strokeWidth: getWidth(5),
+                              ),
+                            ),
+                          ):InkWell(
+                            onTap: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductPage(id:products[index].id),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(child: SizedBox(
+                                    height:getHeight(107),
+                                    width:getWidth(106),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(getHeight(15)),
+                                        child: Image.network('https:${products[index].srcImage}',
+                                        fit: BoxFit.fill,
+                                        )))),
+                                SizedBox(height: getHeight(7),),
+                                Padding(
+                                  padding:  EdgeInsets.only(left: getWidth(7)),
+                                  child: Text(products[index].title,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: getHeight(14),
+                                        fontWeight: FontWeight.w700
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: getHeight(6),),
-                              Padding(
-                                padding:  EdgeInsets.only(left: getWidth(7)),
-                                child: Text(products[index].price.toStringAsFixed(2)+'DA',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: getHeight(12),
-                                      fontWeight: FontWeight.w700
+                                SizedBox(height: getHeight(6),),
+                                Padding(
+                                  padding:  EdgeInsets.only(left: getWidth(7)),
+                                  child: Text('${products[index].price.toStringAsFixed(2)}DA',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: getHeight(12),
+                                        fontWeight: FontWeight.w700
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                            ],
+                              ],
+                            ),
                           ),
 
                         ),
@@ -516,6 +609,14 @@ class _HomePageState extends State<HomePage> {
 
                     SizedBox(width: getWidth(145),),
                     InkWell(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ProductAllPage(),
+                          ),
+                        );
+                      },
                       child: Text('Voir tous',
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
@@ -546,40 +647,60 @@ class _HomePageState extends State<HomePage> {
                               color: const Color(0x38E1DEDE),
                               borderRadius: BorderRadius.circular(getHeight(18))
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(child: SizedBox(
-                                  height:getHeight(107),
-                                  width:getWidth(106),
-                                  child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(getHeight(15)),
-                                      child: Image.network(products[index].srcImage,fit: BoxFit.cover,)))),
-                              SizedBox(height: getHeight(7),),
-                              Padding(
-                                padding:  EdgeInsets.only(left: getWidth(7)),
-                                child: Text(products[index].title,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: getHeight(14),
-                                      fontWeight: FontWeight.w700
+                          child:
+                          isLoading ?
+                          Padding(
+                            padding:  EdgeInsets.only(top: getHeight(60),bottom: getHeight(60),left: getWidth(40),right: getWidth(40)),
+                            child: SizedBox(
+                              height: getHeight(20),
+                              width: getWidth(20),
+                              child: CircularProgressIndicator(strokeWidth: getWidth(5),
+                              ),
+                            ),
+                          ):InkWell(
+                            onTap: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ProductPage(id:products[index].id),
+                                ),
+                              );
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(child: SizedBox(
+                                    height:getHeight(107),
+                                    width:getWidth(106),
+                                    child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(getHeight(15)),
+                                        child: Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,)))),
+                                SizedBox(height: getHeight(7),),
+                                Padding(
+                                  padding:  EdgeInsets.only(left: getWidth(7)),
+                                  child: Text(products[index].title,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: getHeight(14),
+                                        fontWeight: FontWeight.w700
+                                    ),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: getHeight(6),),
-                              Padding(
-                                padding:  EdgeInsets.only(left: getWidth(7)),
-                                child: Text(products[index].price.toStringAsFixed(2)+'DA',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: getHeight(12),
-                                      fontWeight: FontWeight.w700
+                                SizedBox(height: getHeight(6),),
+                                Padding(
+                                  padding:  EdgeInsets.only(left: getWidth(7)),
+                                  child: Text('${products[index].price.toStringAsFixed(2)}DA',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: getHeight(12),
+                                        fontWeight: FontWeight.w700
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                            ],
+                              ],
+                            ),
                           ),
 
                         ),
