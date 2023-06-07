@@ -70,6 +70,27 @@ class _PanierPageState extends State<PanierPage> {
                         ],
                       ),
                     ),
+                    products.isEmpty?
+                        SizedBox(
+                            height: getHeight(640),
+
+                            child: Center(child: Column(
+                              children: [
+                                SizedBox(height: getHeight(320),),
+                                Text('List is empty',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: getHeight(16)
+                                ),
+                                ),
+                                SizedBox(height: getHeight(15),),
+                                
+                                Icon(Icons.shopping_cart_outlined,color: Kprimary
+                                  ,size: getHeight(50),)
+
+                              ],
+                            ),))
+                    :
                     SizedBox(
                         height: getHeight(640),
                         child: ListView.builder(
@@ -108,7 +129,7 @@ class _PanierPageState extends State<PanierPage> {
                                         width:getWidth(65),
                                         child: ClipRRect(
                                             borderRadius:BorderRadius.circular(getHeight(10)),
-                                            child: Image.network('https:'+products[index]["alt_image"].toString(),fit: BoxFit.fill,))),
+                                            child: Image.network('https:${products[index]["alt_image"]}',fit: BoxFit.fill,))),
                                   ),
                                   Positioned(
                                     top: getHeight(40),
@@ -139,7 +160,7 @@ class _PanierPageState extends State<PanierPage> {
                                     left: getWidth(93),
                                     top: getHeight(60),
                                     child: Text(
-                                      products[index]["product_quantity"].toString() +" articles seulement",
+                                      "${products[index]["product_quantity"]} articles seulement",
                                       style: TextStyle(
                                           color: Colors.red,
                                           fontSize: getHeight(12),
@@ -150,7 +171,7 @@ class _PanierPageState extends State<PanierPage> {
                                     right: getWidth(23),
                                     top: getHeight(17),
                                     child: Text(
-                                      products[index]['product_price'].toString()+'DA',
+                                      '${products[index]['product_price']}DA',
                                       style: TextStyle(
                                           color: Colors.black,
                                           fontSize: getHeight(16),
@@ -251,7 +272,7 @@ class _PanierPageState extends State<PanierPage> {
                           InkWell(
                             onTap: () async{
                               final token = await getToken();
-                              await postOrderWithAddress(token,_location.toString());
+                              await postOrderWithAddress(token,_location.text);
                             },
                             child: Container(
                               height: getHeight(50),
@@ -273,7 +294,7 @@ class _PanierPageState extends State<PanierPage> {
                               ),
                             ),
                           SizedBox(width: getWidth(20),),
-                          Container(
+                          SizedBox(
                             width: getWidth(150),
                             height: getHeight(50),
                             child: TextFormField(

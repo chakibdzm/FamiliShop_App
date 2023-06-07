@@ -1,4 +1,5 @@
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -192,7 +193,15 @@ class _ResetPageState extends State<ResetPage> {
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: getWidth(22)),
             child: InkWell(
-              onTap: null,
+              onTap: (){
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => const LoginPage(),
+    ),
+    );
+
+              },
               child: Container(
                 height: getHeight(54),
                 width: getWidth(353),
@@ -203,8 +212,8 @@ class _ResetPageState extends State<ResetPage> {
                 child: Center(child:Text('Modifier le mot passe  ',
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: getHeight(16),
-                      fontWeight: FontWeight.w600
+                      fontSize: getHeight(14),
+                      fontWeight: FontWeight.w500
                   ),
                 )),
               ),

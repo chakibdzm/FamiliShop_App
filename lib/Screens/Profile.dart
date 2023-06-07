@@ -2,6 +2,7 @@ import 'package:famili_shop_app/Const.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'Product/api-service.dart';
 
@@ -188,7 +189,7 @@ class _ProfilePageState extends State<ProfilePage> {
            ],
          ),
           const Spacer(),
-          Center(child: Image.asset("assets/illustrations/logo-Famili-shop 2.png")),
+          Center(child: SvgPicture.asset("assets/illustrations/Group 1.svg")),
           SizedBox(height: getHeight(20),)
 
           

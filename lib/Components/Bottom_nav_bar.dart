@@ -1,8 +1,8 @@
 
 import 'package:famili_shop_app/Const.dart';
-import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
+
 import 'package:famili_shop_app/Screens/Panier/Panier.dart';
-import 'package:famili_shop_app/Screens/Product/View.dart';
+
 import 'package:famili_shop_app/Screens/Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -107,7 +107,7 @@ class BottomNavState extends State<BottomNav> {
   List<IconData> listOfIcons = [
     Icons.home_rounded,
     Icons.category,
-    Icons.favorite,
+    Icons.shopping_cart_rounded,
     Icons.person_rounded,
   ];
 }

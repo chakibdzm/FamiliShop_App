@@ -1,5 +1,6 @@
 import 'package:famili_shop_app/Components/Bottom_nav_bar.dart';
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Auth%20Screens/Forgot_password.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Registerations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../../Size_config.dart';
-import '../Home/Home_screen.dart';
+
 import '../Product/api-service.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,7 +19,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
@@ -45,30 +45,18 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setBool('isLoggedIn', true);
 
         String token = responseData['jwt'];
-        print("success");
         await saveToken(token);
         return token;
       } else {
-        print('Unexpected response format');
 
       }
     } else {
-      print('Login failed with status: ${response.statusCode}');
 
     }
+
+
   }
-
-
-
-
-
-
-
-
-
-
-
-
+  bool _showCircleAvatar = false;
 
 
 
@@ -82,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children:[
           SizedBox(height: getHeight(146)),
-          Center(child: Image.asset('assets/illustrations/logo-Famili-shop 2.png')),
+          Center(child: SvgPicture.asset('assets/illustrations/Group 1.svg')),
           SizedBox(height: getHeight(98)),
           Padding(
               padding:  EdgeInsets.symmetric(horizontal:getWidth(25) ),
@@ -196,8 +184,20 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: getHeight(49),),
             Padding(
               padding:  EdgeInsets.symmetric(horizontal: getWidth(20)),
-              child: InkWell(
+              child: GestureDetector(
                 onTap: () async {
+
+            setState(() {
+              Future.delayed(const Duration(seconds: 2), () {
+                setState(() {
+                  _showCircleAvatar = false;
+                });
+
+              });
+
+              _showCircleAvatar = true;
+            });
+
               String email = _emailController.text;
               String password = _passwordController.text;
               String? token = await login(email, password);
@@ -208,11 +208,21 @@ class _LoginPageState extends State<LoginPage> {
                       builder: (context) =>  BottomNav(),
                   ),
                 );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Login success'),
+                  backgroundColor: Colors.green,),
+                );
+
+
               } else {
-                print("failed");
               ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login failed')),
+              const SnackBar(content: Text('Login failed'),
+              backgroundColor: Colors.red,
+              ),
               );
+
+
+
               }
               },
                 child: Container(
@@ -222,7 +232,16 @@ class _LoginPageState extends State<LoginPage> {
                     color: Kprimary,
                     borderRadius: BorderRadius.circular(getHeight(33))
                   ),
-                  child: Center(child:Text('Connexion',
+                  child:
+                  _showCircleAvatar?
+
+                  Padding(
+                    padding:  EdgeInsets.symmetric(horizontal: getWidth(160),
+                    vertical: getHeight(15)),
+                    child: const CircularProgressIndicator(
+                      color: Colors.white),
+                  )
+                  : Center(child:Text('Connexion',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: getHeight(16),
@@ -267,13 +286,31 @@ class _LoginPageState extends State<LoginPage> {
 
               ],
             ),
+            SizedBox(height: getHeight(10),),
 
-            SizedBox(height: getHeight(54),),
+            Center(
+              child: InkWell(
+                onTap: (){
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => const ForgotPage(),
+    ),
+    );
+    },
 
+                child: Text('Reset Password?',style: TextStyle(
+                  color: Kprimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: getHeight(14)
+                ),)
+              ),
+            ),
+            SizedBox(height: getHeight(15),),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(width: getWidth(20),),
+                SizedBox(width: getWidth(15),),
                 Padding(
                   padding:  EdgeInsets.only(top: getHeight(8)),
                   child: SvgPicture.asset('assets/icons/Line 40.svg'),
@@ -283,10 +320,10 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.w400,
-                  fontSize: getHeight(16)
+                  fontSize: getHeight(14)
                 ),
                 ),
-                SizedBox(width: getWidth(8),),
+                SizedBox(width: getWidth(8)),
                 Padding(
                   padding:  EdgeInsets.only(top: getHeight(8)),
                   child: SvgPicture.asset('assets/icons/Line 40.svg'),

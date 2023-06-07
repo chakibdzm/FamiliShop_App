@@ -1,4 +1,5 @@
 import 'package:famili_shop_app/Const.dart';
+import 'package:famili_shop_app/Screens/Auth%20Screens/Reset_Password.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -111,7 +112,15 @@ class _PinPageState extends State<PinPage> {
           Padding(
             padding:  EdgeInsets.symmetric(horizontal: getWidth(22)),
             child: InkWell(
-              onTap: null,
+              onTap: (){
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => const ResetPage(),
+    ),
+    );
+    },
+
               child: Container(
                 height: getHeight(54),
                 width: getWidth(353),

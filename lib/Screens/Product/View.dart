@@ -1,12 +1,9 @@
-import 'dart:convert';
 
 import 'package:famili_shop_app/Const.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
 
-import '../Auth Screens/Api/ProductModel.dart';
 import '../Panier/Panier.dart';
 import 'api-service.dart';
 
@@ -121,7 +118,7 @@ class _ProductPageState extends State<ProductPage> {
                            Navigator.push(
                              context,
                              MaterialPageRoute(
-                               builder: (context) => PanierPage(),
+                               builder: (context) => const PanierPage(),
                              ),
                            );
                          },
@@ -192,7 +189,7 @@ class _ProductPageState extends State<ProductPage> {
                             child:
                             _ischanged?
                             SvgPicture.asset('assets/illustrations/Vector (3).svg')
-                            :Icon(Icons.favorite,color: Colors.red,)
+                            :const Icon(Icons.favorite,color: Colors.red,)
                         )),
                     ),
 
@@ -206,15 +203,12 @@ class _ProductPageState extends State<ProductPage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(getHeight(25))
                       ),
-                      child: Center(child: InkWell(
-                          onTap: null,
-                          child: Text((currentIndex+1).toString()+'/2',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w600,
-                            fontSize: getHeight(14)
-                          ),),
-                      )),
+                      child: Center(child: Text((currentIndex+1).toString()+'/2',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: getHeight(14)
+                      ),)),
                     ),
 
                     )
@@ -298,14 +292,48 @@ class _ProductPageState extends State<ProductPage> {
             SizedBox(height: getHeight(12),),
             Padding(
               padding:  EdgeInsets.only(left: getWidth(20)),
-              child: Container(
-                width: getWidth(21),
-                height: getHeight(21),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.red,
-                ),
+              child: Row(
+                children: [
+                  Container(
+                    width: getWidth(21),
+                    height: getHeight(21),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.red,
+                    ),
 
+                  ),
+                  SizedBox(width: getWidth(5),),
+                  Container(
+                    width: getWidth(21),
+                    height: getHeight(21),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black,
+                    ),
+
+                  ),
+                  SizedBox(width: getWidth(5),),
+                  Container(
+                    width: getWidth(21),
+                    height: getHeight(21),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blue,
+                    ),
+
+                  ),
+                  SizedBox(width: getWidth(5),),
+                  Container(
+                    width: getWidth(21),
+                    height: getHeight(21),
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color(0xc7f6d582),
+                    ),
+
+                  ),
+                ],
               ),
             ),
 

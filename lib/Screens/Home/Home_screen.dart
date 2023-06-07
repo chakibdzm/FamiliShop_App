@@ -20,6 +20,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Product> products = [];
+  List<Product> offers = [];
+  List<Product> shop = [];
 
   bool isLoading = true;
   Future<void> fetchProducts() async {
@@ -35,6 +37,38 @@ class _HomePageState extends State<HomePage> {
 
         setState(() {
           products = List<Product>.from(data.map((productData) => Product(
+            // Create Product objects based on fetched data
+            id: productData['id'],
+            title: productData['title'],
+            description: productData['description'],
+            quantity: productData['quantity'],
+            price: productData['price'],
+            promotionStatus: productData['promotion_status'],
+            discountPercentage: productData['discount_percentage'],
+            collectionName: productData['collection_name'],
+            srcImage: productData['src_image'],
+            altImage: productData['alt_image'],
+            taille: productData['taille'],
+            colors: productData['colors'],
+            comments: List<String>.from(productData['comments']),
+          ))).toList();
+          offers = List<Product>.from(data.map((productData) => Product(
+            // Create Product objects based on fetched data
+            id: productData['id'],
+            title: productData['title'],
+            description: productData['description'],
+            quantity: productData['quantity'],
+            price: productData['price'],
+            promotionStatus: productData['promotion_status'],
+            discountPercentage: productData['discount_percentage'],
+            collectionName: productData['collection_name'],
+            srcImage: productData['src_image'],
+            altImage: productData['alt_image'],
+            taille: productData['taille'],
+            colors: productData['colors'],
+            comments: List<String>.from(productData['comments']),
+          ))).toList();
+          shop = List<Product>.from(data.map((productData) => Product(
             // Create Product objects based on fetched data
             id: productData['id'],
             title: productData['title'],
@@ -67,6 +101,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     products.shuffle();
+    offers.shuffle();
+    shop.shuffle();
     SizeConfig().init(context);
     return SafeArea(child: Scaffold(
       backgroundColor: Colors.white,
@@ -155,13 +191,10 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: getHeight(5),),
               Container(
-                height: getHeight(195),
+                height: getHeight(202),
                 width: getWidth(393),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(getHeight(18)),
-                    color: Klight
+                  color: Klight,
 
-                ),
 
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +223,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     SizedBox(height: getHeight(11),),
-                    Expanded(
+                    SizedBox(
+                      height: getHeight(105),
+
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: products.length,
@@ -199,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                             padding:  EdgeInsets.only(right: getWidth(5),left: getWidth(5)),
                             child: Container(
                               width: getWidth(98),
-                              height: getHeight(115),
+                              height: getHeight(125),
                               decoration:BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(getHeight(18))
@@ -213,28 +248,42 @@ class _HomePageState extends State<HomePage> {
                                     child: CircularProgressIndicator(strokeWidth: getWidth(5),
                                     ),
                                   )
-                                 : Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
+                                 : InkWell(
+                                    onTap: (){
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ProductPage(id:products[index].id),
+                                        ),
+                                      );
+                                    },
+                                   child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
 
-                                      SizedBox(
-                                          height: getHeight(85),
-                                          width: getWidth(98),
-                                          child:
-                                          Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,)),
-                                      SizedBox(height: getHeight(5),),
-                                      Padding(
-                                        padding:  EdgeInsets.only(left: getWidth(10)),
-                                        child: Text('${products[index].price.toStringAsFixed(2)} DA',
-                                        style: TextStyle(
-                                          color: Colors.red,
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: getHeight(16)
-                                        ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                        SizedBox(
+                                            height: getHeight(85),
+                                            width: getWidth(98),
+                                            child:
+                                            ClipRRect(
+                                                borderRadius: BorderRadius.only(topRight: Radius.circular(getHeight(18)),topLeft:Radius.circular(getHeight(18)) ),
+                                                child: Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,))),
+
+                              Padding(
+                                padding:  EdgeInsets.only(left: getWidth(10)),
+                                child: Text('${products[index].price.toStringAsFixed(2)} DA',
+                                    style: TextStyle(
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: getHeight(13)
+                                    ),
+                                ),
+                              ),
+
+
+                                      ],
+                                    ),
+                                 ),
                                 ),
                             ),
                           );
@@ -358,7 +407,7 @@ class _HomePageState extends State<HomePage> {
                     ),
 
                     ),
-                    SizedBox(width: getWidth(65),),
+                    SizedBox(width: getWidth(45),),
                     InkWell(
                       onTap: (){
                         Navigator.push(
@@ -372,7 +421,7 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         color: Kprimary,
                         fontWeight: FontWeight.w700,
-                        fontSize: getHeight(16)
+                        fontSize: getHeight(15)
 
                       ),
 
@@ -390,7 +439,7 @@ class _HomePageState extends State<HomePage> {
 
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: products.length,
+                    itemCount: offers.length,
                     itemBuilder: (BuildContext context, int index) {
 
 
@@ -424,7 +473,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProductPage(id:products[index].id),
+                                  builder: (context) => ProductPage(id:offers[index].id),
                                 ),
                               );
                             },
@@ -437,11 +486,11 @@ class _HomePageState extends State<HomePage> {
                                     width:getWidth(106),
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(getHeight(15)),
-                                        child: Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,)))),
+                                        child: Image.network('https:${offers[index].srcImage}',fit: BoxFit.fill,)))),
                                 SizedBox(height: getHeight(7),),
                                 Padding(
                                   padding:  EdgeInsets.only(left: getWidth(7)),
-                                  child: Text(products[index].title,
+                                  child: Text(offers[index].title,
                                     overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -453,7 +502,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: getHeight(6),),
                                 Padding(
                                   padding:  EdgeInsets.only(left: getWidth(7)),
-                                  child: Text('${products[index].price.toStringAsFixed(2)}DA',
+                                  child: Text('${offers[index].price.toStringAsFixed(2)}DA',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: getHeight(12),
@@ -487,7 +536,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     ),
 
-                    SizedBox(width: getWidth(145),),
+                    SizedBox(width: getWidth(138),),
                     InkWell(
                       onTap: (){
                         Navigator.push(
@@ -500,7 +549,7 @@ class _HomePageState extends State<HomePage> {
                       child: Text('Voir tous',
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: getHeight(16),
+                        fontSize: getHeight(15),
                         color:Kprimary
                       ),
                       ),
@@ -516,7 +565,7 @@ class _HomePageState extends State<HomePage> {
 
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    itemCount: products.length,
+                    itemCount: shop.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                         padding:  EdgeInsets.only(right: getWidth(5),left: getWidth(5)),
@@ -541,7 +590,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => ProductPage(id:products[index].id),
+                                  builder: (context) => ProductPage(id:shop[index].id),
                                 ),
                               );
                             },
@@ -553,13 +602,13 @@ class _HomePageState extends State<HomePage> {
                                     width:getWidth(106),
                                     child: ClipRRect(
                                         borderRadius: BorderRadius.circular(getHeight(15)),
-                                        child: Image.network('https:${products[index].srcImage}',
+                                        child: Image.network('https:${shop[index].srcImage}',
                                         fit: BoxFit.fill,
                                         )))),
                                 SizedBox(height: getHeight(7),),
                                 Padding(
                                   padding:  EdgeInsets.only(left: getWidth(7)),
-                                  child: Text(products[index].title,
+                                  child: Text(shop[index].title,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Colors.black,
@@ -571,7 +620,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: getHeight(6),),
                                 Padding(
                                   padding:  EdgeInsets.only(left: getWidth(7)),
-                                  child: Text('${products[index].price.toStringAsFixed(2)}DA',
+                                  child: Text('${shop[index].price.toStringAsFixed(2)}DA',
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: getHeight(12),
@@ -607,7 +656,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
 
-                    SizedBox(width: getWidth(145),),
+                    SizedBox(width: getWidth(138),),
                     InkWell(
                       onTap: (){
                         Navigator.push(
@@ -620,7 +669,7 @@ class _HomePageState extends State<HomePage> {
                       child: Text('Voir tous',
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontSize: getHeight(16),
+                            fontSize: getHeight(15),
                             color:Kprimary
                         ),
                       ),

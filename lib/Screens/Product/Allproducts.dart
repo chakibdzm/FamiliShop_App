@@ -73,7 +73,7 @@ class _ProductAllPageState extends State<ProductAllPage> {
         child: GridView.count(
           physics:
               const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          childAspectRatio:0.65,
+          childAspectRatio:0.60,
 
           padding: EdgeInsets.all(_w / 60),
           crossAxisCount: columnCount,
@@ -137,7 +137,7 @@ class _ProductAllPageState extends State<ProductAllPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: getHeight(5),),
+
                             Padding(
                               padding:  EdgeInsets.only(left: getWidth(7)),
                               child: Text('${products[index].price.toStringAsFixed(2)}DA',
