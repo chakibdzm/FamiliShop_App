@@ -19,13 +19,16 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscureText = true;
+  bool _showFields = false;
+  late AnimationController _animationController;
+  late Animation<double> _opacityAnimation;
   String apiUrl = 'https://familishop.onrender.com/login';
-  Future<String?> login(String email, String password) async {
 
+  Future<String?> login(String email, String password) async {
     Map<String, String> body = {
       'email': email,
       'password': password,
@@ -54,12 +57,37 @@ class _LoginPageState extends State<LoginPage> {
     } else {
 
     }
-
-
   }
+
   bool _showCircleAvatar = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this ,
+      duration: Duration(milliseconds: 500),
+    );
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeIn,
+      ),
+    );
 
+    // Delay the showing of email and password fields
+    Future.delayed(Duration(seconds: 2), () {
+      setState(() {
+        _showFields = true;
+        _animationController.forward();
+      });
+    });
+  }
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,185 +97,193 @@ class _LoginPageState extends State<LoginPage> {
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children:[
-          SizedBox(height: getHeight(146)),
-          Center(child: SvgPicture.asset('assets/illustrations/Group 1.svg')),
-          SizedBox(height: getHeight(98)),
+          children: [
+            SizedBox(height: getHeight(146)),
+            Center(child: SvgPicture.asset('assets/illustrations/Group 1.svg')),
+            SizedBox(height: getHeight(98)),
 
-          Padding(
-              padding:  EdgeInsets.symmetric(horizontal:getWidth(25) ),
-              child: TextFormField(
-                controller: _emailController,
+            AnimatedOpacity(opacity: _showFields ? 1.0 : 0.0,
+                duration: Duration(milliseconds: 500),
+              child: 
+                  FadeTransition(
+                    opacity: _opacityAnimation,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding:  EdgeInsets.symmetric(horizontal:getWidth(25) ),
+                          child: TextFormField(
+                            controller: _emailController,
 
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: getHeight(18),
-                  color: Colors.black,
-                ),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: getHeight(18),
+                              color: Colors.black,
+                            ),
 
-                cursorColor: const Color(0xFF9DA3B6),
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0x0ff2f2f2),
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: getHeight(20),
-                      horizontal: getWidth(20)),
-                  prefixIconConstraints: const BoxConstraints(maxHeight: 25),
+                            cursorColor: const Color(0xFF9DA3B6),
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                                borderSide: const BorderSide(
+                                  width: 1,
+                                  color: Color(0x0ff2f2f2),
+                                ),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(vertical: getHeight(20),
+                                  horizontal: getWidth(20)),
+                              prefixIconConstraints: const BoxConstraints(maxHeight: 25),
 
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(34.0),
-                      borderSide: const BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      )),
-                  fillColor:Klight,
-                  filled: true,
-                  hintText: 'Adresse e-mail ou numéro de téléphone portable',
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(34.0),
+                                  borderSide: const BorderSide(
+                                    width: 0,
+                                    style: BorderStyle.none,
+                                  )),
+                              fillColor:Klight,
+                              filled: true,
+                              hintText: 'Adresse e-mail ou numéro de téléphone portable',
 
-                  hintStyle: TextStyle(
+                              hintStyle: TextStyle(
 
-                    fontSize: getHeight(12),
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF565555),
-                  ),
+                                fontSize: getHeight(12),
+                                fontWeight: FontWeight.w400,
+                                color: const Color(0xFF565555),
+                              ),
 
-                ),
-              ),
-          ),
-            SizedBox(height: getHeight(28),),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: getHeight(28),),
 
-            Padding(
-              padding:  EdgeInsets.symmetric(horizontal:getWidth(20) ),
-              child: TextFormField(
-                controller: _passwordController,
+                        Padding(
+                          padding:  EdgeInsets.symmetric(horizontal:getWidth(20) ),
+                          child: TextFormField(
+                            controller: _passwordController,
 
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: getHeight(18),
-                  color: Colors.black,
-                ),
-                obscureText: _obscureText,
-                cursorColor: const Color(0xFF9DA3B6),
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    borderSide: const BorderSide(
-                      width: 1,
-                      color: Color(0x0ff2f2f2),
-                    ),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: getHeight(20),
-                      horizontal: getWidth(20)),
-                  prefixIconConstraints: const BoxConstraints(maxHeight: 25),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: getHeight(18),
+                              color: Colors.black,
+                            ),
+                            obscureText: _obscureText,
+                            cursorColor: const Color(0xFF9DA3B6),
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  borderSide: const BorderSide(
+                                    width: 1,
+                                    color: Color(0x0ff2f2f2),
+                                  ),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(vertical: getHeight(20),
+                                    horizontal: getWidth(20)),
+                                prefixIconConstraints: const BoxConstraints(maxHeight: 25),
 
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(34.0),
-                      borderSide: const BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      )),
-                  fillColor:Klight,
-                  filled: true,
-                  hintText: 'Mot de passe',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(34.0),
+                                    borderSide: const BorderSide(
+                                      width: 0,
+                                      style: BorderStyle.none,
+                                    )),
+                                fillColor:Klight,
+                                filled: true,
+                                hintText: 'Mot de passe',
 
-                  hintStyle: TextStyle(
+                                hintStyle: TextStyle(
 
-                    fontSize: getHeight(12),
-                    fontWeight: FontWeight.w400,
-                    color: const Color(0xFF565555),
-                  ),
+                                  fontSize: getHeight(12),
+                                  fontWeight: FontWeight.w400,
+                                  color: const Color(0xFF565555),
+                                ),
 
 
-                  suffixIcon: Padding(
-                    padding: EdgeInsets.only(right: getWidth(16)),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        })
-                        ;
-                      },
-                      child:_obscureText?
-                      const Icon(Icons.visibility_off_outlined)
-                     : const Icon(Icons.visibility_outlined)
+                                suffixIcon: Padding(
+                                  padding: EdgeInsets.only(right: getWidth(16)),
+                                  child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          _obscureText = !_obscureText;
+                                        })
+                                        ;
+                                      },
+                                      child:_obscureText?
+                                      const Icon(Icons.visibility_off_outlined)
+                                          : const Icon(Icons.visibility_outlined)
 
+                                  ),
+                                )
+
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   )
+                  
 
-                ),
-              ),
             ),
+
+
             SizedBox(height: getHeight(49),),
             Padding(
-              padding:  EdgeInsets.symmetric(horizontal: getWidth(20)),
+              padding: EdgeInsets.symmetric(horizontal: getWidth(20)),
               child: GestureDetector(
                 onTap: () async {
+                  setState(() {
+                    Future.delayed(const Duration(seconds: 2), () {
+                      setState(() {
+                        _showCircleAvatar = false;
+                      });
+                    });
 
-            setState(() {
-              Future.delayed(const Duration(seconds: 2), () {
-                setState(() {
-                  _showCircleAvatar = false;
-                });
+                    _showCircleAvatar = true;
+                  });
 
-              });
+                  String email = _emailController.text;
+                  String password = _passwordController.text;
+                  String? token = await login(email, password);
+                  if (token != null) {
+                    Navigator.pushReplacement(
+                        context,
+                        SlideTransition2(BottomNav())
 
-              _showCircleAvatar = true;
-            });
-
-              String email = _emailController.text;
-              String password = _passwordController.text;
-              String? token = await login(email, password);
-              if (token != null) {
-                Navigator.pushReplacement(
-                  context,
-                    SlideTransition2(BottomNav())
-
-                );
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Login success'),
-                  backgroundColor: Colors.green,),
-                );
-
-
-              } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Login failed'),
-              backgroundColor: Colors.red,
-              ),
-              );
-
-
-
-              }
-              },
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Login success'),
+                        backgroundColor: Colors.green,),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Login failed'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
                 child: Container(
                   height: getHeight(54),
                   width: getWidth(353),
                   decoration: BoxDecoration(
-                    color: Kprimary,
-                    borderRadius: BorderRadius.circular(getHeight(33))
+                      color: Kprimary,
+                      borderRadius: BorderRadius.circular(getHeight(33))
                   ),
                   child:
-                  _showCircleAvatar?
+                  _showCircleAvatar ?
 
                   Padding(
-                    padding:  EdgeInsets.symmetric(horizontal: getWidth(160),
-                    vertical: getHeight(15)),
+                    padding: EdgeInsets.symmetric(horizontal: getWidth(160),
+                        vertical: getHeight(15)),
                     child: const CircularProgressIndicator(
-                      color: Colors.white),
+                        color: Colors.white),
                   )
-                  : Center(child:Text('Connexion',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: getHeight(16),
-                    fontWeight: FontWeight.w600
-                  ),
+                      : Center(child: Text('Connexion',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: getHeight(16),
+                        fontWeight: FontWeight.w600
+                    ),
                   )),
                 ),
               ),
@@ -258,28 +294,28 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 SizedBox(width: getWidth(78),),
                 Text('Vous n’avez pas un compte! ',
-                style: TextStyle(
+                  style: TextStyle(
 
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
-                  fontSize: getHeight(14)
-                ),
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: getHeight(14)
+                  ),
 
                 ),
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     Navigator.push(
-                      context,
-                      SlideTransition2(RegisterPage())
+                        context,
+                        SlideTransition2(RegisterPage())
 
                     );
                   },
                   child: Text('Inscrire',
-                  style: TextStyle(
-                    color: Kprimary,
-                    fontSize: getHeight(14),
-                    fontWeight: FontWeight.w400
-                  ),
+                    style: TextStyle(
+                        color: Kprimary,
+                        fontSize: getHeight(14),
+                        fontWeight: FontWeight.w400
+                    ),
                   ),
 
                 )
@@ -290,19 +326,19 @@ class _LoginPageState extends State<LoginPage> {
 
             Center(
               child: InkWell(
-                onTap: (){
-    Navigator.push(
-    context,
-        SlideTransition2(ForgotPage())
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        SlideTransition2(ForgotPage())
 
-    );
-    },
+                    );
+                  },
 
-                child: Text('Reset Password?',style: TextStyle(
-                  color: Kprimary,
-                  fontWeight: FontWeight.w500,
-                  fontSize: getHeight(14)
-                ),)
+                  child: Text('Reset Password?', style: TextStyle(
+                      color: Kprimary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: getHeight(14)
+                  ),)
               ),
             ),
             SizedBox(height: getHeight(15),),
@@ -311,23 +347,22 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 SizedBox(width: getWidth(15),),
                 Padding(
-                  padding:  EdgeInsets.only(top: getHeight(8)),
+                  padding: EdgeInsets.only(top: getHeight(8)),
                   child: SvgPicture.asset('assets/icons/Line 40.svg'),
                 ),
                 SizedBox(width: getWidth(8),),
                 Text('Continuer avec',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
-                  fontSize: getHeight(14)
-                ),
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                      fontSize: getHeight(14)
+                  ),
                 ),
                 SizedBox(width: getWidth(8)),
                 Padding(
-                  padding:  EdgeInsets.only(top: getHeight(8)),
+                  padding: EdgeInsets.only(top: getHeight(8)),
                   child: SvgPicture.asset('assets/icons/Line 40.svg'),
                 ),
-
 
 
               ],
@@ -343,9 +378,6 @@ class _LoginPageState extends State<LoginPage> {
                 Image.asset('assets/illustrations/google-logo-9808 1.png')
               ],
             )
-
-
-
 
 
           ],

@@ -13,7 +13,7 @@ class PanierPage extends StatefulWidget {
 }
 
 class _PanierPageState extends State<PanierPage> {
-  var cpt = 1;
+  int cpt = 1;
 
 
   List<Map<String, dynamic>> products = [];

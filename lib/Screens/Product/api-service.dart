@@ -64,6 +64,7 @@ Future<List<Map<String, dynamic>>> fetchPanier() async {
   );
 
   if (response.statusCode == 200) {
+    print("fetchedd");
     final List<dynamic> responseData = json.decode(response.body);
     final List<Map<String, dynamic>> products = responseData.map((item) => Map<String, dynamic>.from(item)).toList();
     return products;
