@@ -24,6 +24,11 @@ Future<String> getToken() async {
   return token ?? '';
 }
 
+Future<void> destroy() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('loginToken');
+  await prefs.setBool('isLoggedIn', false);
+}
 
 
 Future<Map<String, dynamic>> fetchUserData() async {

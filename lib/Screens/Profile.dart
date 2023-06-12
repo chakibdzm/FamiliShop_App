@@ -60,7 +60,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     SizedBox(width: getWidth(150),),
                     InkWell(
-                      onTap: (){
+                      onTap: ()async{
+                        await destroy();
+
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
