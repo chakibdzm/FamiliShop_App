@@ -3,6 +3,7 @@ import 'package:famili_shop_app/Screens/Product/api-service.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:http/http.dart' as http;
 
 class PanierPage extends StatefulWidget {
   const PanierPage({Key? key}) : super(key: key);
@@ -17,6 +18,35 @@ class _PanierPageState extends State<PanierPage> {
 
   List<Map<String, dynamic>> products = [];
   final _location = TextEditingController();
+
+  Future<void> deleteProductFromCart(int productId, String token) async {
+    final url = 'https://familishop.onrender.com/panier_remove/$productId/';
+
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 204) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Deleted from Cart please refresh !'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed , Please Try Again'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+
+    }
+  }
+
 
   @override
   void initState() {
@@ -84,7 +114,6 @@ class _PanierPageState extends State<PanierPage> {
                                 ),
                                 ),
                                 SizedBox(height: getHeight(15),),
-                                
                                 Icon(Icons.shopping_cart_outlined,color: Kprimary
                                   ,size: getHeight(50),)
 

@@ -1,4 +1,5 @@
 import 'package:famili_shop_app/Components/Bottom_nav_bar.dart';
+import 'package:famili_shop_app/Components/Page_transition.dart';
 import 'package:famili_shop_app/Const.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Forgot_password.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Registerations.dart';
@@ -24,20 +25,20 @@ class _LoginPageState extends State<LoginPage> {
   bool _obscureText = true;
   String apiUrl = 'https://familishop.onrender.com/login';
   Future<String?> login(String email, String password) async {
-    // Create the request body with email and password
+
     Map<String, String> body = {
       'email': email,
       'password': password,
     };
 
-    // Make the POST request to the login API endpoint
+
     http.Response response = await http.post(
       Uri.parse(apiUrl),
       headers: {'Content-Type': 'application/json'},
       body: json.encode(body),
     );
 
-    // Check the response status code
+
     if (response.statusCode == 200) {
       var responseData = json.decode(response.body);
       if (responseData != null && responseData['jwt'] != null) {
@@ -72,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(height: getHeight(146)),
           Center(child: SvgPicture.asset('assets/illustrations/Group 1.svg')),
           SizedBox(height: getHeight(98)),
+
           Padding(
               padding:  EdgeInsets.symmetric(horizontal:getWidth(25) ),
               child: TextFormField(
@@ -204,9 +206,8 @@ class _LoginPageState extends State<LoginPage> {
               if (token != null) {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>  BottomNav(),
-                  ),
+                    SlideTransition2(BottomNav())
+
                 );
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Login success'),
@@ -269,9 +270,8 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: (){
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const RegisterPage(),
-                      ),
+                      SlideTransition2(RegisterPage())
+
                     );
                   },
                   child: Text('Inscrire',
@@ -293,9 +293,8 @@ class _LoginPageState extends State<LoginPage> {
                 onTap: (){
     Navigator.push(
     context,
-    MaterialPageRoute(
-    builder: (context) => const ForgotPage(),
-    ),
+        SlideTransition2(ForgotPage())
+
     );
     },
 

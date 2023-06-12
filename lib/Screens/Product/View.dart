@@ -1,9 +1,12 @@
 
+import 'dart:convert';
+
+import 'package:famili_shop_app/Components/Page_transition.dart';
 import 'package:famili_shop_app/Const.dart';
 import 'package:famili_shop_app/Size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:http/http.dart' as http;
 import '../Panier/Panier.dart';
 import 'api-service.dart';
 
@@ -19,6 +22,50 @@ class _ProductPageState extends State<ProductPage> {
   Map<String, dynamic> data = {};
   int currentIndex = 0;
   bool _ischanged = true;
+
+
+  Future<void> postProductToCart(int productId, int quantity, String token) async {
+    const url = 'https://familishop.onrender.com/panier_add/';
+    final token = await getToken();
+    final Map<String, dynamic> body = {
+      'product_id': productId,
+      'quantity': quantity,
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: json.encode(body),
+    );
+
+    if (response.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Added To Cart'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to Add To Cart'),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+
+    }
+  }
+
+
+
+
+
+
+
   @override
   void initState() {
     super.initState();
@@ -117,9 +164,8 @@ class _ProductPageState extends State<ProductPage> {
                          onTap: (){
                            Navigator.push(
                              context,
-                             MaterialPageRoute(
-                               builder: (context) => const PanierPage(),
-                             ),
+                               SlideTransition2(PanierPage())
+
                            );
                          },
 
@@ -345,6 +391,7 @@ class _ProductPageState extends State<ProductPage> {
               child: InkWell(onTap: () async {
                 final token = await getToken();
                 await postProductToCart(widget.id, 5,token);
+
 
               },
               child: Container(

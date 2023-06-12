@@ -1,3 +1,4 @@
+import 'package:famili_shop_app/Components/Page_transition.dart';
 import 'package:famili_shop_app/Const.dart';
 import 'package:famili_shop_app/Screens/Panier/Panier.dart';
 import 'package:famili_shop_app/Screens/Product/Allproducts.dart';
@@ -37,7 +38,7 @@ class _HomePageState extends State<HomePage> {
 
         setState(() {
           products = List<Product>.from(data.map((productData) => Product(
-            // Create Product objects based on fetched data
+
             id: productData['id'],
             title: productData['title'],
             description: productData['description'],
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
             comments: List<String>.from(productData['comments']),
           ))).toList();
           offers = List<Product>.from(data.map((productData) => Product(
-            // Create Product objects based on fetched data
+
             id: productData['id'],
             title: productData['title'],
             description: productData['description'],
@@ -87,6 +88,8 @@ class _HomePageState extends State<HomePage> {
         });
       }
       else {
+        print("error");
+
         throw Exception('Failed to fetch products');
       }
 
@@ -100,7 +103,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    products.shuffle();
+    List<Product> filteredProducts = products.where((product) => product.promotionStatus == 1).toList();
     offers.shuffle();
     shop.shuffle();
     SizeConfig().init(context);
@@ -176,9 +179,7 @@ class _HomePageState extends State<HomePage> {
                           onTap: (){
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) => const PanierPage(),
-                              ),
+                                SlideTransition2(PanierPage())
                             );
                           },
 
@@ -228,7 +229,7 @@ class _HomePageState extends State<HomePage> {
 
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: products.length,
+                        itemCount: filteredProducts.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
                             padding:  EdgeInsets.only(right: getWidth(5),left: getWidth(5)),
@@ -239,7 +240,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(getHeight(18))
                               ),
-                                child: Center(
+                                child: 
+                                Center(
                                   child:
                                   isLoading ?
                                   SizedBox(
@@ -252,9 +254,8 @@ class _HomePageState extends State<HomePage> {
                                     onTap: (){
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ProductPage(id:products[index].id),
-                                        ),
+                                          SlideTransition2(ProductPage(id:filteredProducts[index].id))
+
                                       );
                                     },
                                    child: Column(
@@ -267,11 +268,11 @@ class _HomePageState extends State<HomePage> {
                                             child:
                                             ClipRRect(
                                                 borderRadius: BorderRadius.only(topRight: Radius.circular(getHeight(18)),topLeft:Radius.circular(getHeight(18)) ),
-                                                child: Image.network('https:${products[index].srcImage}',fit: BoxFit.fill,))),
+                                                child: Image.network('https:${filteredProducts[index].srcImage}',fit: BoxFit.fill,))),
 
                               Padding(
                                 padding:  EdgeInsets.only(left: getWidth(10)),
-                                child: Text('${products[index].price.toStringAsFixed(2)} DA',
+                                child: Text('${(filteredProducts[index].price-(filteredProducts[index].discountPercentage/100)*filteredProducts[index].price).toStringAsFixed(2)} DA',
                                     style: TextStyle(
                                         color: Colors.red,
                                         fontWeight: FontWeight.w500,
@@ -412,10 +413,8 @@ class _HomePageState extends State<HomePage> {
                       onTap: (){
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProductAllPage(),
-                          ),
-                        );
+                            SlideTransition2(ProductAllPage()));
+
                       },
                       child: Text('Voir tous',
                       style: TextStyle(
@@ -445,8 +444,6 @@ class _HomePageState extends State<HomePage> {
 
                       return
 
-
-
                         Padding(
                         padding:  EdgeInsets.only(right: getWidth(5),left: getWidth(5)),
                         child:
@@ -472,9 +469,8 @@ class _HomePageState extends State<HomePage> {
                                onTap:  (){
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductPage(id:offers[index].id),
-                                ),
+                                  SlideTransition2(ProductPage(id:offers[index].id))
+
                               );
                             },
                             child: Column(
@@ -540,11 +536,8 @@ class _HomePageState extends State<HomePage> {
                     InkWell(
                       onTap: (){
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProductAllPage(),
-                          ),
-                        );
+                            context,
+                            SlideTransition2(ProductAllPage()));
                       },
                       child: Text('Voir tous',
                       style: TextStyle(
@@ -589,9 +582,8 @@ class _HomePageState extends State<HomePage> {
                             onTap: (){
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductPage(id:shop[index].id),
-                                ),
+                                SlideTransition2(ProductPage(id:shop[index].id))
+
                               );
                             },
                             child: Column(
@@ -608,7 +600,7 @@ class _HomePageState extends State<HomePage> {
                                 SizedBox(height: getHeight(7),),
                                 Padding(
                                   padding:  EdgeInsets.only(left: getWidth(7)),
-                                  child: Text(shop[index].title,
+                                  child: Text(shop[index].title.toString(),
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         color: Colors.black,
@@ -660,11 +652,8 @@ class _HomePageState extends State<HomePage> {
                     InkWell(
                       onTap: (){
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProductAllPage(),
-                          ),
-                        );
+                            context,
+                            SlideTransition2(ProductAllPage()));
                       },
                       child: Text('Voir tous',
                         style: TextStyle(
@@ -710,9 +699,7 @@ class _HomePageState extends State<HomePage> {
                             onTap: (){
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) => ProductPage(id:products[index].id),
-                                ),
+                                  SlideTransition2(ProductPage(id:products[index].id))
                               );
                             },
                             child: Column(

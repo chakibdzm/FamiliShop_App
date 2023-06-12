@@ -1,14 +1,9 @@
 import 'package:famili_shop_app/Components/Bottom_nav_bar.dart';
 import 'package:famili_shop_app/Screens/Auth%20Screens/Login.dart';
-import 'package:famili_shop_app/Screens/Home/Home_screen.dart';
-import 'package:famili_shop_app/Screens/Product/Allproducts.dart';
-import 'package:famili_shop_app/Screens/Product/View.dart';
-import 'package:famili_shop_app/Screens/Profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'errorscreen.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +13,10 @@ void main() async {
   ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
     return CustomErrorWidget(errorDetails);
   };
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 

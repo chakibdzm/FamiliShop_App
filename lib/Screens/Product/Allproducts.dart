@@ -29,7 +29,7 @@ class _ProductAllPageState extends State<ProductAllPage> {
 
       setState(() {
         products = List<Product>.from(data.map((productData) => Product(
-          // Create Product objects based on fetched data
+
           id: productData['id'],
           title: productData['title'],
           description: productData['description'],
