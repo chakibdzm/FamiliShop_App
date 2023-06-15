@@ -214,7 +214,9 @@ class _PanierPageState extends State<PanierPage> {
                                       onTap:()async{
                                         final token = await getToken();
                                         await deleteProductFromCart(products[index]["product_id"], token);
-
+                                        setState(() {
+                                          products.removeAt(index);
+                                        });
                                       },
                                       child: Row(
                                         children: [
